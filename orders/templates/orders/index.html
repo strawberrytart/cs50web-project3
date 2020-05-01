@@ -1,0 +1,170 @@
+{% extends "orders/base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Pinochio's Pizza & Subs: Menu
+{% endblock %}
+
+{% block body%}
+    <body>
+            {% if user is None %}
+                <a href="{% url 'login' %}">Log In</a>
+                <a href="{% url 'sign_up' %}">Sign Up</a>
+            {% else %}
+                <h2>Hello, {{ user.first_name }}</h2>
+                <a href="{% url 'logout' %}">Log Out</a>
+                <a href=""> Cart</a>
+                <a href=""> My Orders</a>
+            {% endif %}
+
+            <h1>Menu</h1>
+
+            <table class="table">
+                <h3>Regular Pizza</h3> 
+                <thead>
+                    <tr> 
+                        <th scope="col">Name</th>
+                        <th scope="col"> Small</th>
+                        <th scope="col">Large</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regularpizza in regularpizzas %}
+                        <tr>
+                            <td>{{regularpizza.name}}</td>
+                            <td>{{regularpizza.small}}<button type="button"  class="regular"  onclick="add_pizza('{{regularpizza.name}}','Small','{{regularpizza.small}}', this)">Order</button></td>
+                            <td>{{regularpizza.large}}<button type="button"  class="regular"  onclick="add_pizza('{{regularpizza.name}}','Large','{{regularpizza.small}}',this)">Order</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3> Sicilian Pizza</h3>
+
+            <table class="table">
+                <thead>
+                    <tr> 
+                        <th scope="col">Name</th>
+                        <th scope="col"> Small</th>
+                        <th scope="col">Large</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sicilianpizza in sicilianpizzas %}
+                        <tr>
+                            <td>{{ sicilianpizza.name }}</td>
+                            <td>{{ sicilianpizza.small }}<button type="button"  class="sicilian" onclick="add_pizza('{{sicilianpizza.name}}','Small','{{sicilianpizza.small}}')">Order</button></td>
+                            <td>{{ sicilianpizza.large }}<button type="button"  class="sicilian" onclick="add_pizza('{{sicilianpizza.name}}','Large','{{sicilianpizza.small}}')">Order</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+       
+            
+            <h3> Subs</h3>
+
+            <table class="table">
+                <thead>
+                    <tr> 
+                        <th scope="col">Name</th>
+                        <th scope="col"> Small</th>
+                        <th scope="col">Large</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subs %}
+
+                        {% if sub.small == 0 %} 
+                        <tr>
+                            <td colspan="2">{{sub.name}}</td>
+                            <td>{{sub.large}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.small}}','small',this)">Order</button></td>
+                        </tr>
+                        {% elif sub.large == 0 %}
+                        <tr>
+                            <td>{{sub.name}}</td>
+                            <td colspan="2">{{sub.small}}<button  type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.large}}','large',this)">Order</button></td>
+                        </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{sub.name}}</td>
+                                <td>{{sub.small}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.small}}','small',this)">Order</button></td>
+                                <td>{{sub.large}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.large}}','large',this)">Order</button></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>    
+            
+            <h3> Pasta</h3>
+
+            <table class="table">
+                <thead>
+                    <tr> 
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pasta in pastas %}
+                        <tr>
+                            <td>{{pasta.name}}</td>
+                            <td>{{pasta.price}}<button type="button" class="pasta" onclick="add_subs(name='{{pasta.name}}',price='{{pasta.price}}')">Order</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>   
+
+            <h3> Salads </h3>
+
+            <table class="table">
+                <thead>
+                    <tr> 
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for salad in salads %}
+                        <tr>
+                            <td>{{salad.name}}</td>
+                            <td>{{salad.price}}<button type="button" class="salad" onclick="add_subs(name='{{salad.name}}',price='{{salad.price}}')">Order</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>   
+
+            <h3> Dinner Platters</h3> 
+
+            <table class="table">
+                <thead>
+                    <tr> 
+                        <th>Name</th>
+                        <th>Small</th>
+                        <th>Large</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for platter in dinner_platters %}
+                        <tr>
+                            <td>{{ platter.name }}</td>
+                            <td>{{ platter.small }}<button type="button" class="dinner_plate" onclick="add_subs(name='{{platter.name}}',price='{{platter.small}}', size='small')">Order</button></td>
+                            <td>{{ platter.large }}<button type="button" class="dinner_plate" onclick="add_subs(name='{{platter.name}}',price='{{platter.large}}',size='large')">Order</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table> 
+
+            <div class="modall"></div>
+            <div class="modall-content">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="toppings-selection">
+                    </div>
+                    <button type='submit' id='add-to-cart' class="btn btn-outline-primary"> Add to Cart</button>
+                </form>
+            </div>
+    </body>
+{% endblock %}
+

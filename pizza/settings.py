@@ -119,3 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"), #BASE_DIR refers to 'pizza' as the base directory and then look for the "static" folder
+    #need to tell app which folder to look for
+    '/var/www/static/',
+]
