@@ -131,13 +131,21 @@ class ModalOther(View):
 
 class AddToCart(View):
     def post(self, request):
-        toppings_0= request.POST['toppings_0']
-        toppings_1= request.POST['toppings_1']
-        toppings_2= request.POST['toppings_2']
-
+        message= request.POST['message']
+        dish=request.POST['dish']
+        price=request.POST['price']
         if request.is_ajax():
-            print(toppings_0, toppings_1, toppings_2)
+            user=request.user
+            order=Order.objects.get(user=user, status="Initiated")
+            order_id=order.id
+            
+            if len(message)==0:
+                print("JSON data is empty")
+            else:
+                print(message.split(", "))
+            print("Order ID:", order_id)
+            print(price)
             #add the user and order to Cart 
-            return JsonResponse({'obj':'Successfully added item to cart!'}, status=200)
+            return JsonResponse({'obj':'Successfully added item to cart!', 'dish':dish}, status=200)
         return HttpResponseRedirect(reverse("index"))
 

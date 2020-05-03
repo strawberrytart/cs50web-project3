@@ -33,8 +33,8 @@
                     {% for regularpizza in regularpizzas %}
                         <tr>
                             <td>{{regularpizza.name}}</td>
-                            <td>{{regularpizza.small}}<button type="button"  class="regular"  onclick="add_pizza('{{regularpizza.name}}','Small','{{regularpizza.small}}', this)">Order</button></td>
-                            <td>{{regularpizza.large}}<button type="button"  class="regular"  onclick="add_pizza('{{regularpizza.name}}','Large','{{regularpizza.small}}',this)">Order</button></td>
+                            <td>{{regularpizza.small}}<button type="button"  class="regular"  data-size="Small" data-name='{{regularpizza.name}}' data-price='{{regularpizza.small}}'>Order</button></td>
+                            <td>{{regularpizza.large}}<button type="button"  class="regular"  data-size="Large" data-name='{{regularpizza.name}}' data-price='{{regularpizza.large}}'>Order</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -54,8 +54,8 @@
                     {% for sicilianpizza in sicilianpizzas %}
                         <tr>
                             <td>{{ sicilianpizza.name }}</td>
-                            <td>{{ sicilianpizza.small }}<button type="button"  class="sicilian" onclick="add_pizza('{{sicilianpizza.name}}','Small','{{sicilianpizza.small}}')">Order</button></td>
-                            <td>{{ sicilianpizza.large }}<button type="button"  class="sicilian" onclick="add_pizza('{{sicilianpizza.name}}','Large','{{sicilianpizza.small}}')">Order</button></td>
+                            <td>{{ sicilianpizza.small }}<button type="button"  class="sicilian" data-size="Small" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.small }}'>Order</button></td>
+                            <td>{{ sicilianpizza.large }}<button type="button"  class="sicilian" data-size="Large" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.large }}'>Order</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -79,18 +79,18 @@
                         {% if sub.small == 0 %} 
                         <tr>
                             <td colspan="2">{{sub.name}}</td>
-                            <td>{{sub.large}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.small}}','small',this)">Order</button></td>
+                            <td>{{sub.large}}<button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></td>
                         </tr>
                         {% elif sub.large == 0 %}
                         <tr>
                             <td>{{sub.name}}</td>
-                            <td colspan="2">{{sub.small}}<button  type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.large}}','large',this)">Order</button></td>
+                            <td colspan="2">{{sub.small}}<button  type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></td>
                         </tr>
                         {% else %}
                             <tr>
                                 <td>{{sub.name}}</td>
-                                <td>{{sub.small}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.small}}','small',this)">Order</button></td>
-                                <td>{{sub.large}}<button type="button" class="subs" onclick="add_subs('{{sub.name}}','{{sub.large}}','large',this)">Order</button></td>
+                                <td>{{sub.small}}<button type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></td>
+                                <td>{{sub.large}}<button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></td>
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -110,7 +110,7 @@
                     {% for pasta in pastas %}
                         <tr>
                             <td>{{pasta.name}}</td>
-                            <td>{{pasta.price}}<button type="button" class="pasta" onclick="add_subs(name='{{pasta.name}}',price='{{pasta.price}}')">Order</button></td>
+                            <td>{{pasta.price}}<button type="button" class="pasta" data-name='{{pasta.name}}' data-price='{{pasta.price}}'>Order</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -129,7 +129,7 @@
                     {% for salad in salads %}
                         <tr>
                             <td>{{salad.name}}</td>
-                            <td>{{salad.price}}<button type="button" class="salad" onclick="add_subs(name='{{salad.name}}',price='{{salad.price}}')">Order</button></td>
+                            <td>{{salad.price}}<button type="button" class="salads" data-name='{{salad.name}}' data-price='{{salad.price}}'>Order</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -149,8 +149,8 @@
                     {% for platter in dinner_platters %}
                         <tr>
                             <td>{{ platter.name }}</td>
-                            <td>{{ platter.small }}<button type="button" class="dinner_plate" onclick="add_subs(name='{{platter.name}}',price='{{platter.small}}', size='small')">Order</button></td>
-                            <td>{{ platter.large }}<button type="button" class="dinner_plate" onclick="add_subs(name='{{platter.name}}',price='{{platter.large}}',size='large')">Order</button></td>
+                            <td>{{ platter.small }}<button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.small}}' data-size='Small'>Order</button></td>
+                            <td>{{ platter.large }}<button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.large}}' data-size='Large'>Order</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -162,7 +162,7 @@
                     {% csrf_token %}
                     <div class="toppings-selection">
                     </div>
-                    <button type='submit' id='add-to-cart' class="btn btn-outline-primary"> Add to Cart</button>
+                    <button type='submit' id='add-to-cart' data-name='rockm' class="btn btn-outline-primary"> Add to Cart</button>
                 </form>
             </div>
     </body>
