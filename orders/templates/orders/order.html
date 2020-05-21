@@ -1,1 +1,36 @@
 {% extends "orders/base.html" %}
+
+{% block body %}
+
+    {% for i in message %}
+        <div> {{i.id}}</div>
+        {% for j in i.order_id.all %}
+            <div>{{j.cart_item}} - {{j.item_price}}</div>
+            {% if j.toppings.all %}
+                <div>{{ j.toppings.all|join:", " }}</div>
+            {% endif %}
+            {% if j.extras.all %}
+                <div>{{ j.extras.all|join:","}}</div>
+            {% endif %}
+        {% empty %}
+            <p>{{error}}</p>
+        {% endfor %}
+    {% endfor %}
+    <!--
+    <div>
+        <h1>{{message.0.order_id.id}}</h1>
+        {% for i in message %}
+            <div>{{i.cart_item}} - {{i.item_price}}</div>
+            {% if i.toppings.all %}
+                <div>{{ i.toppings.all|join:", " }}</div>
+            {% endif %}
+            {% if i.extras.all %}
+                <div>{{ i.extras.all|join:","}}</div>
+            {% endif %}
+        {% empty %}
+            <p>{{error}}</p>
+        {% endfor %}
+    </div>
+    -->
+
+{% endblock %}

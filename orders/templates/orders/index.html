@@ -1,6 +1,7 @@
 {% extends "orders/base.html" %}
 
 {% load static %}
+<link rel="stylesheet" href="{% static '/css/index.css' %}">
 
 {% block title %}
     Pinochio's Pizza & Subs: Menu
@@ -8,20 +9,32 @@
 
 {% block body%}
     <body>
-            {% if user is None %}
-                <a href="{% url 'login' %}">Log In</a>
-                <a href="{% url 'sign_up' %}">Sign Up</a>
-            {% else %}
-                <h2>Hello, {{ user.first_name }}</h2>
-                <a href="{% url 'logout' %}">Log Out</a>
-                <a href=""> Cart</a>
-                <a href=""> My Orders</a>
-            {% endif %}
+        <div>
+            <div class ="row">
+                <div class="col-sm-6">
+                    {% if user is None %}
+                        <a href="{% url 'login' %}">Log In</a>
+                        <a href="{% url 'sign_up' %}">Sign Up</a>
+                    {% else %}
+                        <h2>Hello, {{ user.first_name }}</h2>
+                        <a href="{% url 'logout' %}">Log Out</a>
+                        <a href="{% url 'order_view' %}"> My Orders</a>
+                    {% endif %}
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'manage_order' %}">Manage Orders</a>
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <a href="{% url 'cart_view' %}">Cart</a>
+                </div>
+            </div>
 
+        </div>
             <h1>Menu</h1>
 
             <table class="table">
                 <h3>Regular Pizza</h3> 
+                <div class="image-cropper"></div>
                 <thead>
                     <tr> 
                         <th scope="col">Name</th>

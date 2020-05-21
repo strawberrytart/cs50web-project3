@@ -1,0 +1,24 @@
+{% extends "orders/base.html" %}
+
+{% block body %}
+    {% for i in orders %}
+        <div>
+            <p> User: {{i.user}}</p>
+            <p> Total: {{ i.order_total}} </p>
+            <p> Status: {{ i.status}} </p>
+        </div>
+        <div>
+        <div>
+            {% for j in i.order_id.all %}
+                <div>{{j.cart_item}} - {{j.item_price}}</div>
+                {% if j.toppings.all %}
+                    <div>{{ j.toppings.all|join:", " }}</div>
+                {% endif %}
+                {% if j.extras.all %}
+                    <div>{{ j.extras.all|join:","}}</div>
+                {% endif %}
+            {% empty %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

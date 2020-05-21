@@ -9,13 +9,19 @@ $(document).ready(function () {
         add_subs($(this))
     });
 
+    $('.place-order').on('click', function(){
+        ToggleModal();
+    });
+
     $('#add-to-cart').on('click', function(e){
         e.preventDefault();
         var message=[];
+        var flag_pizza=true;
         if ($(this).data('name')=='subs'){
             $("input[type=checkbox]:checked").each(function(){
-                message.push($(this).val());
+                message.push($(this).attr('id'));
             })
+            flag_pizza=false;
         }
         else if($(this).data('name')=='pizza'){
             $('.topping-dropdown option:selected').each(function(){
@@ -31,7 +37,8 @@ $(document).ready(function () {
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 message:message,
                 dish:$('.toppings-selection > h3').text(),
-                price:$('#price').text()
+                price:$('#price').text(),
+                flag:flag_pizza
             },
             success:function(response){
                 $('.modall-content').removeClass('active');
@@ -45,7 +52,36 @@ $(document).ready(function () {
         $('.modall-content').removeClass('active');
         $('.modall').removeClass('show-modall');
     });
+
+    $('.delete').on('click', function(){
+        delete_cart($(this))
+    });
+
+    $('button:contains("Back")').on('click',function(){
+        $('.modall-content').removeClass('active');
+        $('.modall').removeClass('show-modall');
+    });
 });
+
+
+function delete_cart(element){
+    name=element.data('id');
+    $.ajax({
+        url:'delete_cart',
+        type:'post',
+        dataType: "json",
+        data:{
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            id:name
+        },
+        success:function(){
+           location.reload(true);
+        }
+    });
+};
+
+
+
 
 function add_pizza(element){
     name= element.data('name');
@@ -105,12 +141,13 @@ function add_subs(element){
         },
         success:function(response){
             $('.toppings-selection').empty();
+            $('.toppings-selection').next('h6').remove();
             $('#add-to-cart').removeAttr('data-name');
             console.log(price);
             console.log(size);
             if (element.attr('class')=='subs'){
                 $('.toppings-selection').append((`<h3>${size} ${name} Sub</h3>`))
-                $('.toppings-selection').append($(`<h6 id='price'> ${price}</h6>`))
+                $('.toppings-selection').append($(`<h6 id='price_before'> ${price}</h6>`))
                 $('#add-to-cart').attr('data-name','subs')
             }
             else if (element.attr('class')=='platter'){
@@ -124,16 +161,32 @@ function add_subs(element){
             for (var j=0; j< response.obj.length; j++){
                 div=$('<div class="form-check"> </div>')
                 extra=response.obj[j];
-                input=$(`<input class="form-check-input" type="checkbox" value=${extra.name} id=${extra.name} >`)
-                label=$(`<label class="form-check-label" for=${extra.name} >${extra.name} - $${extra.price}</label>`)
+                input=$(`<input class="form-check-input" type="checkbox" value= "${extra.price}" id="${extra.name}">`)
+                label=$(`<label class="form-check-label" for= "${extra.name}" > ${extra.name} - ${extra.price}</label>`)
                 div.append(input)
                 div.append(label)
                 $('.toppings-selection').append(div)
             };
+            if (element.attr('class')=='subs'){
+                $('.toppings-selection').append($(`<h6> Total: <span id='price'>${price} <span></h6>`))
+            }
             ToggleModal();
         }
     }); 
 }
 
+function CalculateTotal(){
+    var total=parseFloat($('#price_before').html()) /*convert text to float to 2 decimal places*/ 
+    console.log(total)
+    $('input[type=checkbox]:checked').each(function(){
+        total+=parseFloat($(this).val());
+    });
+    console.log(total)
+    $('#price').html(total);
+}
+
+$(document).on('change', "input[type=checkbox]",function(){
+    CalculateTotal();
+})
 
 

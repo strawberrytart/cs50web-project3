@@ -12,5 +12,7 @@ urlpatterns = [
     path("signup", views.sign_up, name="sign_up"),
     path("modal", views.Modal.as_view()),
     path("modal_other", views.ModalOther.as_view()),
-    path("add_to_cart", views.AddToCart.as_view())
+    path("add_to_cart", views.AddToCart.as_view()),
+    path("delete_cart", views.DeleteCart.as_view()),
+    path("manage_order", views.manage_order, name="manage_order")
 ]

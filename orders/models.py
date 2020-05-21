@@ -69,7 +69,7 @@ class Extra(models.Model):
     price=models.DecimalField(max_digits=4, decimal_places=2)
 
     def __str__(self):
-        return f"{self.name} - {self.price}"
+        return f"{self.name}"
 
 # Order model
 
@@ -95,5 +95,5 @@ class Cart (models.Model):
     item_price=models.DecimalField(max_digits=4, decimal_places=2)
 
     def __str__(self):
-        return f"{self.order_id} : {self.user} - {self.cart_item} - {self.toppings} - {self.extras} - {self.item_price}"
+        return f"{self.order_id.id}: {self.user} - {self.cart_item} - {self.toppings} - {self.extras} - {self.item_price}"
 

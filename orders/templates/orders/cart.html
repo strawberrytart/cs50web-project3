@@ -1,1 +1,69 @@
 {% extends "orders/base.html" %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Log Out</a>
+        <h2> {{user.first_name}}'s Cart </h2>
+
+        <div>
+            {% for item in message %}
+                <div>
+                    <h5>{{ item.cart_item }} - {{ item.item_price }}</h5><button type="submit" class="delete" data-id='{{item.id}}'> Delete</button>
+                    {% for topping in item.toppings.all %}
+                        <span>{{topping}}</span>
+                    {% empty %}
+                        {% for extra in item.extras.all %}
+                            <span>{{extra}}</span>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% empty %}
+                <span> Cart is empty. </span>
+            {% endfor %} 
+        </div>
+        <div>Total:  <span>{{grandtotal}}</span></div>
+        {% if message.all %}
+            <button type='submit' class='place-order'> Place Order</button>
+        {% endif %}
+
+    {% else %}
+        <h2> Cart </h2>
+        <div>
+            {% for item in message %}
+                <h5>{{ item.dish }} - {{ item.price }} </h5>
+                <span> {{ item.toppings }} </span>
+            {% empty %}
+                <span> Cart is empty. </span>
+            {% endfor %}
+        </div>
+        <div>Total: <span>{{grandtotal}}</span></div>
+    {% endif %}
+
+    
+    
+    <div class="modall"></div>
+    <div class="modall-content">
+        <div class="summary">
+            <ul>
+                {% for item in message %}
+                    <li>
+                        <h5>{{ item.cart_item }} - {{ item.item_price }}</h5>
+                        {% for topping in item.toppings.all %}
+                            <span>{{topping}}</span>
+                        {% empty %}
+                            {% for extra in item.extras.all %}
+                                <span>{{extra}}</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div>Total: <span>{{grandtotal}}</span></div>
+        </div>
+        <form action="{% url 'order_view' %}" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-outline-primary" type="submit">Confirm</button>
+        </form>
+        <button class="btn btn-outline-primary">Back</button>
+    </div>
+{% endblock %}
