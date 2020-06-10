@@ -1,11 +1,14 @@
 {% extends "orders/base.html" %}
 
 {% block body %}
-    {% for i in orders %}
+    <!-- 
+    <div class="wrapper container">
+        {% for i in orders %}
         <div>
             <p> User: {{i.user}}</p>
             <p> Total: {{ i.order_total}} </p>
             <p> Status: {{ i.status}} </p>
+            <p> ID: {{i.id}} </p>
         </div>
         <div>
         <div>
@@ -21,4 +24,60 @@
             {% endfor %}
         </div>
     {% endfor %}
+    </div>
+    -->
+
+    <div class="wrapper container">
+        <div><p> Manage Order</p></div>
+        {% for i in orders %}
+            <div class="accordion_wrap">
+                <div class="accordion_header d-flex">
+                    <div>
+                        order {{i.id}}
+                    </div>
+                    <div class="ml-auto mr-5">
+                        status: {{ i.status | lower}}
+                    </div>
+                </div>
+                <div class="accordion_body">
+                    <div class="row client-details">
+                        <div class="col text-center">
+                            <p>customer: {{i.user}}</p>
+                        </div>
+                        <div class="col text-center">
+                            <p>order placed: X.XX </p>
+                        </div>
+                    </div>
+                    {% for j in i.order_id.all %}
+                        <div class="row">
+                            <div class="col text-center">
+                                <div class="title"><p>{{ j.cart_item }}</p></div>
+                                <div class="extra">
+                                    {% if j.toppings.all %}
+                                        <span>{{ j.toppings.all|join:", " }}</span>
+                                    {% endif %}
+                                    {% if j.extras.all %}
+                                        <span>{{ j.extras.all|join:", "}}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col text-center"><p>{{ j.item_price }}</p></div>
+                        </div>
+                    {% empty %}
+                        <p>No items in cart.</p>
+                    {% endfor %}
+                    <div class="row"><div class="col text-center"><p>Total: {{ i.order_total}}</p></div></div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <form action="{% url 'manage_order' %}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-success" type="submit" name='mark' value='{{i.id}}'>Mark as complete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
 {% endblock %}

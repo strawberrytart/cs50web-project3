@@ -6,6 +6,9 @@
 <form action="{% url 'sign_up' %}" method="post">
     {% csrf_token %}
     {{ form }}
+    {% if request.GET.next %} <!-- get the value of the 'next' parameter in request-->
+        <input type="hidden" name="next" value="{{request.GET.next}}"> <!-- 'value' would be /orders. -->
+    {% endif %}
     <button type="submit" value="Submit"> Sign Up </button>
 </form>
 {% endblock %}

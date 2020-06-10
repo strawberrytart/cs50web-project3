@@ -17,9 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path("", include("orders.urls")),
     path("admin/", admin.site.urls),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # go to media/menu_image
 
 urlpatterns +=staticfiles_urlpatterns() #function that checks if we are in debug more or not. if yes, will append to urlpatterns

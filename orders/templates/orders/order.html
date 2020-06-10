@@ -1,36 +1,38 @@
 {% extends "orders/base.html" %}
 
 {% block body %}
-
-    {% for i in message %}
-        <div> {{i.id}}</div>
-        {% for j in i.order_id.all %}
-            <div>{{j.cart_item}} - {{j.item_price}}</div>
-            {% if j.toppings.all %}
-                <div>{{ j.toppings.all|join:", " }}</div>
-            {% endif %}
-            {% if j.extras.all %}
-                <div>{{ j.extras.all|join:","}}</div>
-            {% endif %}
-        {% empty %}
-            <p>{{error}}</p>
-        {% endfor %}
-    {% endfor %}
-    <!--
-    <div>
-        <h1>{{message.0.order_id.id}}</h1>
+    <div class="wrapper container">
+        <div><p>{{ request.user.first_name }}'s Orders</p></div>
         {% for i in message %}
-            <div>{{i.cart_item}} - {{i.item_price}}</div>
-            {% if i.toppings.all %}
-                <div>{{ i.toppings.all|join:", " }}</div>
-            {% endif %}
-            {% if i.extras.all %}
-                <div>{{ i.extras.all|join:","}}</div>
-            {% endif %}
+            <div class="accordion_wrap">
+                <div class="accordion_header d-flex bg-light">
+                    <div>order {{i.id}}</div>
+                    <div class="ml-auto mr-5">
+                        status: {{ i.status | lower}}
+                    </div>
+                </div>
+                <div class="accordion_body">
+                    {% for j in i.order_id.all %}
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="title"><p>{{ j.cart_item }}</p></div>
+                                <div class="extra">
+                                    {% if j.toppings.all %}
+                                        <span>{{ j.toppings.all|join:", " }}</span>
+                                    {% endif %}
+                                    {% if j.extras.all %}
+                                        <span>{{ j.extras.all|join:", "}}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-4 text-center"><p>{{ j.item_price }}</p></div>
+                        </div>
+                    {% endfor %}
+                    <div class="row"><div class="col text-center"><p>Total: {{ i.order_total}}</p></div></div>
+                </div>
+            </div>
         {% empty %}
-            <p>{{error}}</p>
+            <p>No orders submitted for now.</p>
         {% endfor %}
     </div>
-    -->
-
 {% endblock %}

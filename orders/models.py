@@ -8,6 +8,7 @@ from django.contrib import admin
 class Salads(models.Model):
     name=models.CharField(max_length=64)
     price=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='salads_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.price}"
@@ -16,6 +17,7 @@ class Salads(models.Model):
 class Pasta(models.Model):
     name=models.CharField(max_length=64)
     price=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='pasta_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.price}"
@@ -32,6 +34,7 @@ class DinnerPlatters(models.Model):
     name=models.CharField(max_length=64)
     small=models.DecimalField(max_digits=4, decimal_places=2)
     large=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='dinnerplatters_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.small} - {self.large}"
@@ -41,6 +44,7 @@ class RegularPizza(models.Model):
     name=models.CharField(max_length=64)
     small=models.DecimalField(max_digits=4, decimal_places=2)
     large=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='regularpizza_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.small} - {self.large}"
@@ -50,6 +54,7 @@ class SicilianPizza(models.Model):
     name=models.CharField(max_length=64)
     small=models.DecimalField(max_digits=4, decimal_places=2)
     large=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='sicilianpizza_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.small} - {self.large}"
@@ -59,6 +64,7 @@ class Subs(models.Model):
     name=models.CharField(max_length=64)
     small=models.DecimalField(max_digits=4, decimal_places=2)
     large=models.DecimalField(max_digits=4, decimal_places=2)
+    image=models.ImageField(upload_to='subs_img', blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.small} - {self.large}"
@@ -80,7 +86,7 @@ class Order (models.Model):
     time=models.DateTimeField(auto_now=True,blank=True)
 
     def __str__(self):
-        return f"{self.user} - {self.order_total} - {self.status} - {self.time.date()} - {self.time.time()}"
+        return f"{self.id} {self.user} - {self.order_total} - {self.status} - {self.time.date()} - {self.time.time()}"
 
 class OrderAdmin(admin.ModelAdmin):
     readonly_fields=('time',)

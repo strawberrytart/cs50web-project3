@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.generic import View
+from django.contrib.auth.decorators import login_required
 import json
 
 from .models import Salads, Pasta, Toppings, DinnerPlatters, RegularPizza, SicilianPizza, Subs, Extra, Order, Cart
@@ -44,27 +45,30 @@ def index(request):
     return render(request, "orders/index.html", context)
 
 def login_page(request):
-    return render(request, "orders/login.html")
-
-def login_verify(request):#request contains session cookies...
-    username = request.POST["username"] 
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password) # will return None if failed
-    if user is not None:#if authentication is successful
-        login(request, user)#request object contains cookies, current login user...
-        print(request.session.session_key)
-        try:
-            order=Order.objects.get(user=request.user, status="Initiated")
-        except:
-            order=Order(user=request.user)
-            order.save()
-            print("Initiated a new order for", request.user)
-        else:
-            print("An order currently exists.")
-        return HttpResponseRedirect(reverse("index"))#takes in name and redirects the urls
-    else:# if not successful
-        return render(request, "orders/login.html", {"message": "Invalid credentials."})
-
+    if request.method == "POST":
+        username = request.POST["username"] 
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password) # will return None if failed
+        if user is not None:#if authentication is successful
+            login(request, user)#request object contains cookies, current login user...
+            print(request.session.session_key)
+            try:
+                order=Order.objects.get(user=request.user, status="Initiated")
+            except:
+                order=Order(user=request.user)
+                order.save()
+                print("Initiated a new order for", request.user)
+            else:
+                print("An order currently exists.")
+            if 'next' in request.POST:
+                print(request.POST.get('next'))
+                return HttpResponseRedirect(request.POST.get('next'))
+            else:
+                return HttpResponseRedirect(reverse("index"))#takes in name and redirects the urls
+        else:# if not successful
+            return render(request, "orders/login.html", {"message": "Invalid credentials."})
+    else: #GET request
+        return render(request, "orders/login.html")
 
 def logout_view(request):
     logout(request)
@@ -98,13 +102,16 @@ def cart_view(request):
             cart_items=[]
         else:
             cart_items=request.session['cart_items']
-    return render(request, "orders/cart.html", {"message": cart_items, "grandtotal":grand_total})
+            for item in cart_items:
+                grand_total+=float(item["price"])
+    return render(request, "orders/cart.html", {"cart_items": cart_items, "grandtotal":grand_total})
 
-
+@login_required(login_url="login") #only logged in users can access this orders url. If not, must go through login page first.
 def order_view(request):
     if request.method == 'POST':
         total=0
         user=request.user
+        print(user)
         order=Order.objects.get(user=user, status="Initiated")
         try:
             cart=Cart.objects.all().filter(order_id=order.id)
@@ -119,9 +126,8 @@ def order_view(request):
         order.status="Submitted"
         order.order_total=total
         order.save()
-        message=Order.objects.all().filter(user=user, status="Submitted")
-        #create a new order for the user
-        order=Order(user=request.user)
+        message=Order.objects.filter(user=user).exclude(status="Initiated")
+        order=Order(user=request.user)#create a new order for the user
         order.save()
         return render(request, "orders/order.html", {'message': message})
     else:
@@ -131,7 +137,8 @@ def order_view(request):
         message=[]
         try:
             #get user's orders that are already submitted
-            order=Order.objects.all().filter(user=user, status="Submitted")
+            order=Order.objects.filter(user=user).exclude(status="Initiated")
+            print(order)
         except error:
             # else ,display error message
             print(error)
@@ -140,7 +147,7 @@ def order_view(request):
             message=order
             # if successful, get the cart items through the related name "order_id"
             #message=order.order_id.all()
-        return render(request, "orders/order.html", {'message': message, 'error': error})
+        return render(request, "orders/order.html", {'message': message})
 
 def sign_up(request):
     if request.method == 'POST':
@@ -148,16 +155,83 @@ def sign_up(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Account created successfully')
-            return HttpResponseRedirect(reverse("login"))
+            if 'next' in request.POST:
+                print(request.POST.get('next'))
+                return HttpResponseRedirect(request.POST.get('next'))
+            else:
+               return HttpResponseRedirect(reverse("login"))
     else:
         form = SignUpForm()
     return render(request, "orders/signup.html", {"form":form})
 
 def manage_order(request):
-    if request.user.is_superuser:
-        orders=Order.objects.all()
-        print(orders)
+    if request.method == 'POST':
+        if 'mark' in request.POST:
+            id=request.POST.get('mark')
+            order=Order.objects.get(pk=id)
+            order.status="Completed"
+            order.save()
+            orders=Order.objects.all()
+    else:
+        if request.user.is_superuser:
+            orders=Order.objects.all()
+            print(orders)
     return render(request, "orders/manage_order.html", {"orders":orders})
+
+
+@login_required(login_url="login") #only logged in users can access this orders url. 
+def order_summary(request):
+    if request.user.is_authenticated:
+        user=request.user
+        order=Order.objects.get(user=user, status="Initiated")
+        order_id=order.id
+        #here we will add in any items placed in the request session when the user was anon to the cart. 
+        if request.session.get('cart_items', 0) != 0:
+            guest_cart=request.session['cart_items']
+            for item in guest_cart:
+                dish=item['dish']
+                price=item['price']
+                toppings=item['toppings']
+                print(dish, price, toppings)
+                cart=Cart(order_id=order, user=user, cart_item=dish, item_price=price)
+                cart.save()
+                if len(toppings)>0:
+                    toppings= toppings.split(", ")
+                    for topping in toppings:
+                        try:
+                            t=Toppings.objects.get(name=topping)
+                        except:
+                            t=Extra.objects.get(name=topping)
+                            cart.extras.add(t)
+                        else:
+                            cart.toppings.add(t)
+            request.session['cart_items']=[]#clear the request session
+        try:
+            cart_items=Cart.objects.all().filter(order_id=order)
+        except:
+            cart_items=[]
+            grand_total=0
+        else:
+            print("Success!")
+            grand_total=0
+            for item in cart_items:
+                grand_total+=item.item_price
+                print(grand_total)
+            print(grand_total)
+    else:
+        grand_total=0.00
+        try:
+            request.session['cart_items']
+            print("cart aint empty")
+        except KeyError as error:
+            print(error)
+            cart_items=[]
+        else:
+            cart_items=request.session['cart_items']
+            for item in cart_items:
+                grand_total+=float(item["price"])
+    return render(request, "orders/order_summary.html", {"cart_items": cart_items, "grandtotal":grand_total})
+
 
 
 class Modal(View):
@@ -242,17 +316,27 @@ class AddToCart(View):
 class DeleteCart(View):
     def post(self, request):
         id=request.POST['id']
+        message="Error" #default message is Error
         if request.is_ajax():
             if request.user.is_authenticated:
-                message="Error"
                 user=request.user
                 try:
-                    cart=Cart.objects.get(user=user, id=id)
+                    cart=Cart.objects.get(user=user, id=id) #get the cart based on user and the id of the item in the cart
                     cart.delete()
                 except:
-                    print("Error")
+                    print("Failed to delete cart item.")
                 else:
-                    print("Success!")
+                    message='Sucessfully removed item from cart'
+                return JsonResponse({'message':message}, status=200)
+            else: # Guest trying to delete item from cart that is stored in the session. 
+                try:
+                    a_list=request.session['cart_items']
+                except:
+                    print('Error')
+                else:
+                    #remove item from session based on index clicked by the user    
+                    a_list.pop(int(id)-1) #forloop counter indexed 1, so need to minus 1
+                    request.session['cart_items']=a_list #update the 'cart_items' key in session
                     message='Sucessfully removed item from cart'
                 return JsonResponse({'message':message}, status=200)
         return HttpResponseRedirect(reverse("cart_view"))

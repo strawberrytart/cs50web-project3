@@ -36,7 +36,7 @@ $(document).ready(function () {
             data:{
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 message:message,
-                dish:$('.toppings-selection > h3').text(),
+                dish:$('.popup-title > h3').text(),
                 price:$('#price').text(),
                 flag:flag_pizza
             },
@@ -60,6 +60,11 @@ $(document).ready(function () {
     $('button:contains("Back")').on('click',function(){
         $('.modall-content').removeClass('active');
         $('.modall').removeClass('show-modall');
+    });
+
+    $(".accordion_header").click(function(){
+        $(".accordion_header").removeClass("active");
+       $(this).addClass("active");
     });
 });
 
@@ -96,13 +101,14 @@ function add_pizza(element){
         },
         success:function(response){
             $('.toppings-selection').empty();
+            $('.popup-title').empty();
             if (element.attr('class')=="regular"){
-                $('.toppings-selection').append((`<h3>${size} Regular ${name} Pizza </h3>`))
-                $('.toppings-selection').append($(`<h6 id='price'> ${price}</h6>`))
+                $('.popup-title').append((`<h3>${size} Regular ${name} Pizza </h3>`))
+                $('.popup-title').append($(`<h6 id='price'> ${price}</h6>`))
             }
             else{
-                $('.toppings-selection').append((`<h3>${size} Sicilian ${name} Pizza </h3>`))
-                $('.toppings-selection').append($(`<h6 id='price'> ${price}</h6>`))
+                $('.popup-title').append((`<h3>${size} Sicilian ${name} Pizza </h3>`))
+                $('.popup-title').append($(`<h6 id='price'> ${price}</h6>`))
             }
             $('#add-to-cart').attr('data-name','pizza')
             for (var i=0; i< response.n; i++){
@@ -141,22 +147,23 @@ function add_subs(element){
         },
         success:function(response){
             $('.toppings-selection').empty();
-            $('.toppings-selection').next('h6').remove();
+            $('.popup-title').empty();
+            /*$('.toppings-selection').next('h6').remove();*/
             $('#add-to-cart').removeAttr('data-name');
             console.log(price);
             console.log(size);
             if (element.attr('class')=='subs'){
-                $('.toppings-selection').append((`<h3>${size} ${name} Sub</h3>`))
-                $('.toppings-selection').append($(`<h6 id='price_before'> ${price}</h6>`))
+                $('.popup-title').append((`<h3>${size} ${name} Sub</h3>`))
+                $('.popup-title').append($(`<h6 id='price_before'> ${price}</h6>`))
                 $('#add-to-cart').attr('data-name','subs')
             }
             else if (element.attr('class')=='platter'){
-                $('.toppings-selection').append((`<h3>${size} ${name} Dinner Platter</h3>`))
-                $('.toppings-selection').append($(`<h6 id='price'> ${price}</h6>`))
+                $('.popup-title').append((`<h3>${size} ${name} Dinner Platter</h3>`))
+                $('.popup-title').append($(`<h6 id='price'> ${price}</h6>`))
             }
             else{
-                $('.toppings-selection').append((`<h3>${size} ${name}</h3>`))
-                $('.toppings-selection').append($(`<h6 id='price'> ${price}</h6>`))
+                $('.popup-title').append((`<h3>${size} ${name}</h3>`))
+                $('.popup-title').append($(`<h6 id='price'> ${price}</h6>`))
             }
             for (var j=0; j< response.obj.length; j++){
                 div=$('<div class="form-check"> </div>')

@@ -7,177 +7,234 @@
     Pinochio's Pizza & Subs: Menu
 {% endblock %}
 
-{% block body%}
-    <body>
-        <div>
-            <div class ="row">
-                <div class="col-sm-6">
-                    {% if user is None %}
-                        <a href="{% url 'login' %}">Log In</a>
-                        <a href="{% url 'sign_up' %}">Sign Up</a>
-                    {% else %}
-                        <h2>Hello, {{ user.first_name }}</h2>
-                        <a href="{% url 'logout' %}">Log Out</a>
-                        <a href="{% url 'order_view' %}"> My Orders</a>
-                    {% endif %}
-                    {% if request.user.is_superuser %}
-                        <a href="{% url 'manage_order' %}">Manage Orders</a>
-                    {% endif %}
+{% block body %}
+    <div class="container zelda">
+        <div class="row">
+            <div class="col username">
+                {% if user.is_authenticated %}
+                    <h6> Welcome, {{user.first_name}}</h6>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center menu-title">
+               <h1>menu</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 py-4">
+                <div class="row">
+                    <div class="col-md-6 col-6 dish">
+                        <h4>regular pizza</h4>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>small</h6>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>large</h6>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <a href="{% url 'cart_view' %}">Cart</a>
+                {% for regularpizza in regularpizzas %}
+                <div class="row d-flex align-items-center py-2 menu-contents">
+                    <div class="col-md-6 col-6 d-flex flex-row align-items-center pr-0">
+                        <div class="image-cropper">
+                            {% if regularpizza.image %}
+                                <img src="{{ regularpizza.image.url }}">
+                            {% endif %}
+                        </div>
+                        <div><span class="px-2">{{regularpizza.name}}</span></div>
+                    </div>
+                    <div class="col-md-3 col-3">
+                        <span > {{regularpizza.small}}</span>
+                        <span><button type="button"  class="btn regular"  data-size="Small" data-name='{{regularpizza.name}}' data-price='{{regularpizza.small}}'><i class="fas fa-cart-plus"></i></button></span>
+                    </div>
+                    <div class="col-md-3 col-3">
+                        <span>{{regularpizza.large}}</span>
+                        <span><button type="button"  class="btn regular"  data-size="Large" data-name='{{regularpizza.name}}' data-price='{{regularpizza.large}}'><i class="fas fa-cart-plus"></i></button></span>
+                    </div>
                 </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6 py-4">
+                <div class="row">
+                    <div class="col-md-6 col-6 dish">
+                        <span><h4>sicilian pizza</h4></span>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>small</h6>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>large</h6>
+                    </div>
+                </div>
+                {% for sicilianpizza in sicilianpizzas %}
+                <div class="row d-flex align-items-center py-2 menu-contents">
+                    <div class="col-md-6 col-6 d-flex flex-row align-items-center pr-0 "> 
+                        <div class="image-cropper">
+                            {% if sicilianpizza.image %}
+                                <img src="{{ sicilianpizza.image.url }}">
+                            {% endif %}
+                        </div>
+                        <div><span class="px-2">{{sicilianpizza.name}}</span></div>
+                    </div>
+                    <div class="col-md-3 col-3">
+                        <span>{{ sicilianpizza.small }}</span>
+                        <span><button type="button"  class="sicilian" data-size="Small" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.small }}'>Order</button></span>
+                    </div>
+                    <div class="col-md-3 col-3">
+                        <span>{{ sicilianpizza.large }}</span>
+                        <span><button type="button"  class="sicilian" data-size="Large" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.large }}'>Order</button></span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6 py-4">
+                <div class="row" data-aos="fade-up">
+                    <div class="col-md-6 col-6 dish">
+                        <span><h4>subs</h4></span>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>small</h6>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center size"> 
+                        <h6>large</h6>
+                    </div>
+                </div>
+                {% for sub in subs %}
+                   <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
+                        <div class="col-md-6 col-6 d-flex flex-row align-items-center pr-0">
+                            <div class="image-cropper">
+                                <img src="{% static 'image/regular-special.jpg' %}">
+                            </div>
+                            <div><span class="px-2">{{sub.name}}</span></div>
+                        </div>
+                        {% if sub.small == 0 %}
+                            <div class="col-md-3 col-3">
+                                <span>{{sub.large}}</span>
+                                <span><button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></span>
+                            </div>
+                        {% elif sub.large == 0 %}
+                            <div class="col-md-3 col-3">
+                                <span>{{sub.small}}</span>
+                                <span><button  type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></span>
+                            </div>
+                        {% else %}
+                            <div class="col-md-3 col-3">
+                                <span>{{sub.small}}</span>
+                                <span><button type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></span>
+                            </div>
+                            <div class="col-md-3 col-3">
+                                <span>{{sub.large}}</span>
+                                <span><button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></span>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6 py-4">
+                <div class="row dish" data-aos="fade-up">
+                    <div class="col-md-6 col-6 dish">
+                        <span><h4>pasta</h4></span>
+                    </div>
+                    <div class="col-md-3 col-3 size"> 
+                        <h6>standard</h6>
+                    </div>
+                </div>
+                {% for pasta in pastas %}
+                    <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
+                        <div class="col-md-6 col-6 d-flex flex-row align-items-center pr-0"> 
+                            <div class="image-cropper">
+                                <img src="{% static 'image/regular-special.jpg' %}">
+                            </div>
+                            <div><span class="px-2">{{pasta.name}}</span></div>
+                        </div>
+                        <div class="col-md-3 col-3">
+                            <span>{{ pasta.price }}</span>
+                            <span><button type="button" class="pasta" data-name='{{pasta.name}}' data-price='{{pasta.price}}'>Order</button></span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                <div class="row size" data-aos="fade-up">
+                    <div class="col-md-6 col-6 dish">
+                        <span><h4>salads</h4></span>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center"> 
+                        <h6>standard</h6>
+                    </div>
+                </div>
+                {% for salad in salads %}
+                    <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
+                        <div class="col-md-6 col-6 d-flex flex-row align-items-center"> 
+                            <div class="image-cropper">
+                                {% if salad.image %}
+                                    <img src="{{ salad.image.url }}">
+                                {% endif %}
+                            </div>
+                            <div><span class="px-2">{{ salad.name }}</span></div>
+                        </div>
+                        <div class="col-md-3 col-3">
+                            <span>{{ salad.price }}</span>
+                            <span><button type="button" class="salads" data-name='{{salad.name}}' data-price='{{salad.price}}'>Order</button></span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div  class="col-md-6">
+                <div class="row size" data-aos="fade-up">
+                    <div class="col-md-6 col-6 dish"><h4>dinner platter</h4></span>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center"> 
+                        <h6>small</h6>
+                    </div>
+                    <div class="col-md-3 col-3 d-flex justify-content-center"> 
+                        <h6>large</h6>
+                    </div>
+                </div>
+                 {% for platter in dinner_platters %}
+                    <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
+                        <div class="col-md-6 col-6 d-flex flex-row align-items-center"> 
+                            <div class="image-cropper">
+                                <img src="{% static 'image/regular-special.jpg' %}">
+                            </div>
+                            <div><span class="px-2 text-center">{{ platter.name }}</span></div>
+                        </div>
+                        <div class="col-md-3 col-3">
+                            <span>{{ platter.small }}</span>
+                            <span><button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.small}}' data-size='Small'>Order</button></span>
+                        </div>
+                        <div class="col-md-3 col-3">
+                            <span>{{ platter.large }}</span>
+                            <span><button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.large}}' data-size='Large'>Order</button></span>
+                        </div>
+                    </div>
+                 {% endfor %}
             </div>
 
         </div>
-            <h1>Menu</h1>
+    
+        <div class="modall"></div>
 
-            <table class="table">
-                <h3>Regular Pizza</h3> 
-                <div class="image-cropper"></div>
-                <thead>
-                    <tr> 
-                        <th scope="col">Name</th>
-                        <th scope="col"> Small</th>
-                        <th scope="col">Large</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for regularpizza in regularpizzas %}
-                        <tr>
-                            <td>{{regularpizza.name}}</td>
-                            <td>{{regularpizza.small}}<button type="button"  class="regular"  data-size="Small" data-name='{{regularpizza.name}}' data-price='{{regularpizza.small}}'>Order</button></td>
-                            <td>{{regularpizza.large}}<button type="button"  class="regular"  data-size="Large" data-name='{{regularpizza.name}}' data-price='{{regularpizza.large}}'>Order</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <h3> Sicilian Pizza</h3>
-
-            <table class="table">
-                <thead>
-                    <tr> 
-                        <th scope="col">Name</th>
-                        <th scope="col"> Small</th>
-                        <th scope="col">Large</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sicilianpizza in sicilianpizzas %}
-                        <tr>
-                            <td>{{ sicilianpizza.name }}</td>
-                            <td>{{ sicilianpizza.small }}<button type="button"  class="sicilian" data-size="Small" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.small }}'>Order</button></td>
-                            <td>{{ sicilianpizza.large }}<button type="button"  class="sicilian" data-size="Large" data-name='{{ sicilianpizza.name }}' data-price='{{ sicilianpizza.large }}'>Order</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-       
-            
-            <h3> Subs</h3>
-
-            <table class="table">
-                <thead>
-                    <tr> 
-                        <th scope="col">Name</th>
-                        <th scope="col"> Small</th>
-                        <th scope="col">Large</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sub in subs %}
-
-                        {% if sub.small == 0 %} 
-                        <tr>
-                            <td colspan="2">{{sub.name}}</td>
-                            <td>{{sub.large}}<button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></td>
-                        </tr>
-                        {% elif sub.large == 0 %}
-                        <tr>
-                            <td>{{sub.name}}</td>
-                            <td colspan="2">{{sub.small}}<button  type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></td>
-                        </tr>
-                        {% else %}
-                            <tr>
-                                <td>{{sub.name}}</td>
-                                <td>{{sub.small}}<button type="button" class="subs" data-size='Small' data-name='{{sub.name}}' data-price='{{sub.small}}'>Order</button></td>
-                                <td>{{sub.large}}<button type="button" class="subs" data-size='Large' data-name='{{sub.name}}' data-price='{{sub.large}}'>Order</button></td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>    
-            
-            <h3> Pasta</h3>
-
-            <table class="table">
-                <thead>
-                    <tr> 
-                        <th>Name</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for pasta in pastas %}
-                        <tr>
-                            <td>{{pasta.name}}</td>
-                            <td>{{pasta.price}}<button type="button" class="pasta" data-name='{{pasta.name}}' data-price='{{pasta.price}}'>Order</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>   
-
-            <h3> Salads </h3>
-
-            <table class="table">
-                <thead>
-                    <tr> 
-                        <th>Name</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for salad in salads %}
-                        <tr>
-                            <td>{{salad.name}}</td>
-                            <td>{{salad.price}}<button type="button" class="salads" data-name='{{salad.name}}' data-price='{{salad.price}}'>Order</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>   
-
-            <h3> Dinner Platters</h3> 
-
-            <table class="table">
-                <thead>
-                    <tr> 
-                        <th>Name</th>
-                        <th>Small</th>
-                        <th>Large</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for platter in dinner_platters %}
-                        <tr>
-                            <td>{{ platter.name }}</td>
-                            <td>{{ platter.small }}<button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.small}}' data-size='Small'>Order</button></td>
-                            <td>{{ platter.large }}<button type="button" class="platter" data-name='{{platter.name}}' data-price='{{platter.large}}' data-size='Large'>Order</button></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table> 
-
-            <div class="modall"></div>
-            <div class="modall-content">
+        <div class="modall-content flex-column d-flex justify-content-around">
+            <div class="popup-title">
+                <h2> Coffee by Kelly Rowland</h2>
+            </div>
+            <div class="toppings-selection" style="overflow-y: auto;">
+            </div>
+            <div>
                 <form action="" method="POST">
                     {% csrf_token %}
-                    <div class="toppings-selection">
-                    </div>
                     <button type='submit' id='add-to-cart' data-name='rockm' class="btn btn-outline-primary"> Add to Cart</button>
                 </form>
             </div>
-    </body>
+        </div>
+    </div> <!-- Top navbar colored in blue -->
+   
 {% endblock %}
-
