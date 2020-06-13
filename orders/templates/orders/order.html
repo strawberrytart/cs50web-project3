@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="wrapper container">
-        <div><p>{{ request.user.first_name }}'s Orders</p></div>
+        <div class="header"><h2>{{ request.user.first_name | lower}}'s orders</h2></div>
         {% for i in message %}
             <div class="accordion_wrap">
                 <div class="accordion_header d-flex bg-light">

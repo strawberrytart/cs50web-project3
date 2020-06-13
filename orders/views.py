@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 import json
 
 from .models import Salads, Pasta, Toppings, DinnerPlatters, RegularPizza, SicilianPizza, Subs, Extra, Order, Cart
@@ -123,10 +124,11 @@ def order_view(request):
                 total+=i.item_price
                 print(total)
         print(total)
-        order.status="Submitted"
-        order.order_total=total
+        order.status="Submitted" #change status to Submitted
+        order.order_total=total # total sum of order
+        order.time=datetime.now()
         order.save()
-        message=Order.objects.filter(user=user).exclude(status="Initiated")
+        message=Order.objects.filter(user=user).exclude(status="Initiated")#query for all user's orders except for the "Initiated" one
         order=Order(user=request.user)#create a new order for the user
         order.save()
         return render(request, "orders/order.html", {'message': message})

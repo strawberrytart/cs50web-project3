@@ -28,7 +28,7 @@
     -->
 
     <div class="wrapper container">
-        <div><p> Manage Order</p></div>
+        <div class="header"><h2> manage order</h2></div>
         {% for i in orders %}
             <div class="accordion_wrap">
                 <div class="accordion_header d-flex">
@@ -45,7 +45,7 @@
                             <p>customer: {{i.user}}</p>
                         </div>
                         <div class="col text-center">
-                            <p>order placed: X.XX </p>
+                            <p>Submitted: {{i.time}} </p>
                         </div>
                     </div>
                     {% for j in i.order_id.all %}

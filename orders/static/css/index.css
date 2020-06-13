@@ -64,27 +64,17 @@ background:white;
     width: 80px;
     height:80px;
     border-radius:50%;
-    border: 2px solid red;
 }
 
 .image-cropper > img{
     width:100%;
     height:auto;
     margin-top:0px;
+    
 }
 
 
 
-nav-bottom > div{
-    background-color: red;
-    height: 200px;
-}
-
-
-
-div.zelda{
-   
-}
 
 div.summary{
     overflow:auto;
@@ -305,27 +295,28 @@ div.login{
     transform: translate(-50%, -50%);
 }
 
+
+/* Reponsive Bottom Footer*/
 html,body{
     height: 100%
 }
 
-#header{
-    width: 100%;
-}
-
 #holder {
-    min-height: 100%;
-    position:relative;
+    min-height: 100vh;
+    flex-direction:column;
+    display: flex;
+    padding: 0; margin: 0;
 }
 
-#body {
-    padding-bottom: 256px;
+#main {
+    flex: 1;
+    padding: 1em;
 }
 
 #footer{
-    background-color: lime;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
+    background-color: #daa45c;
+    padding: 1em;
+}
+
+#header{
 }

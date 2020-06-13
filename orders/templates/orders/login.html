@@ -1,7 +1,7 @@
 {% extends "orders/base.html" %}
 
 {% block body %}
-    <div class="login">
+    <div class="container">
         <h1>login</h1>
         {% if message %}
             <div>
@@ -13,8 +13,14 @@
             {% if request.GET.next %} <!-- get the value of the 'next' parameter in request-->
                 <input type="hidden" name="next" value="{{request.GET.next}}"> <!-- 'value' would be /orders. -->
             {% endif %}
-            <input name="username" type="text"/>
-            <input name="password" type="password"/>
+            <div>
+                <div>username</div>
+                <input name="username" type="text"/>
+            </div>
+            <div>
+                <div>password</div>
+                <input name="password" type="password"/>
+            </div>
             <input type="submit" value="Login"/>
         </form>
 

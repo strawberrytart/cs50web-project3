@@ -83,10 +83,10 @@ class Order (models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     order_total=models.DecimalField(max_digits=8,decimal_places=2, default=0.00)
     status=models.CharField(max_length=64, default="Initiated")
-    time=models.DateTimeField(auto_now=True,blank=True)
+    time=models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.id} {self.user} - {self.order_total} - {self.status} - {self.time.date()} - {self.time.time()}"
+        return f"{self.id} {self.user} - {self.order_total} - {self.status}"
 
 class OrderAdmin(admin.ModelAdmin):
     readonly_fields=('time',)

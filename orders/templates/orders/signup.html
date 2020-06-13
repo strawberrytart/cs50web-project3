@@ -3,14 +3,18 @@
 {% block body %}
 <h1> Create an account</h1>
 
-<form action="{% url 'sign_up' %}" method="post">
-    {% csrf_token %}
-    {{ form }}
-    {% if request.GET.next %} <!-- get the value of the 'next' parameter in request-->
-        <input type="hidden" name="next" value="{{request.GET.next}}"> <!-- 'value' would be /orders. -->
-    {% endif %}
-    <button type="submit" value="Submit"> Sign Up </button>
-</form>
+<div class="container my-3">
+    <form action="{% url 'sign_up' %}" method="post">
+        {% csrf_token %}
+    
+        {{ form }}
+        {% if request.GET.next %} <!-- get the value of the 'next' parameter in request-->
+            <input type="hidden" name="next" value="{{request.GET.next}}"> <!-- 'value' would be /orders. -->
+        {% endif %}
+        <button type="submit" value="Submit"> Sign Up </button>
+    </form>
+</div>
+
 {% endblock %}
 
 

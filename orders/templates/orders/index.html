@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container zelda">
+    <div class="container">
         <div class="row">
             <div class="col username">
                 {% if user.is_authenticated %}
@@ -47,11 +47,11 @@
                     </div>
                     <div class="col-md-3 col-3">
                         <span > {{regularpizza.small}}</span>
-                        <span><button type="button"  class="btn regular"  data-size="Small" data-name='{{regularpizza.name}}' data-price='{{regularpizza.small}}'><i class="fas fa-cart-plus"></i></button></span>
+                        <span><button type="button"  class="btn regular"  data-size="Small" data-name='{{regularpizza.name}}' data-price='{{regularpizza.small}}'>Order</button></span>
                     </div>
                     <div class="col-md-3 col-3">
                         <span>{{regularpizza.large}}</span>
-                        <span><button type="button"  class="btn regular"  data-size="Large" data-name='{{regularpizza.name}}' data-price='{{regularpizza.large}}'><i class="fas fa-cart-plus"></i></button></span>
+                        <span><button type="button"  class="regular"  data-size="Large" data-name='{{regularpizza.name}}' data-price='{{regularpizza.large}}'>Order</button></span>
                     </div>
                 </div>
                 {% endfor %}
@@ -148,7 +148,9 @@
                     <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
                         <div class="col-md-6 col-6 d-flex flex-row align-items-center pr-0"> 
                             <div class="image-cropper">
-                                <img src="{% static 'image/regular-special.jpg' %}">
+                                {% if pasta.image %}
+                                    <img src="{{ pasta.image.url }}">
+                                {% endif %}
                             </div>
                             <div><span class="px-2">{{pasta.name}}</span></div>
                         </div>
@@ -202,7 +204,9 @@
                     <div class="row d-flex align-items-center py-2 menu-contents" data-aos="fade-up">
                         <div class="col-md-6 col-6 d-flex flex-row align-items-center"> 
                             <div class="image-cropper">
-                                <img src="{% static 'image/regular-special.jpg' %}">
+                                {% if platter.image %}
+                                    <img src="{{ platter.image.url }}">
+                                {% endif %}
                             </div>
                             <div><span class="px-2 text-center">{{ platter.name }}</span></div>
                         </div>
