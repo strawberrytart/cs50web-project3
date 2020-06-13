@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i0&iq&e9u9h6(4_7%pt2s9)f=c$kso=k$c$w@fi9215s=1q0^d'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['pinnochiopizza.herokuapp.com','127.0.0.1']
 
@@ -128,7 +128,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'orders/media') #tell app to store images in orders/media
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "orders/static") #BASE_DIR refers to 'pizza' as the base directory and then look for the "static" folder
+    os.path.join(BASE_DIR, "static") #BASE_DIR refers to 'pizza' as the base directory and then look for the "static" folder
     #need to tell app which folder to look for
 ]
 
